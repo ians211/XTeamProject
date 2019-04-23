@@ -20,7 +20,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			
+			primaryStage.setTitle("Quiz Generator");
+
 			BorderPane root = new BorderPane();
 			root.setStyle("-fx-background-color: #80b380");
 			Scene scene = new Scene(root,400,400);
