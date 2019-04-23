@@ -33,6 +33,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+<<<<<<< HEAD
 			// Question 
 			Label label = new Label("Question #1: What is your name?");
 			label.setFont(Font.font("Palatino Linotyp", 30));
@@ -112,6 +113,9 @@ public class Main extends Application {
 
 			HBox hbox = new HBox(30); // spacing = 8
 			hbox.getChildren().addAll(backButton, pb, nextButton, submitButton);
+=======
+			primaryStage.setTitle("Quiz Generator");
+>>>>>>> 67374f04ab8fe9897f1569f87cb081ebfea3b951
 
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 750, 500);
