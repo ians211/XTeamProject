@@ -360,7 +360,7 @@ public class Main extends Application {
 		EventHandler<ActionEvent> submitEvent = new EventHandler<ActionEvent>() {
 		public void handle(ActionEvent e) {
 		// go to results screen if clicked
-		//primaryStage.setScene(scene2);
+            results(primaryStage);
 			}
 		};
 		submitButton.setOnAction(submitEvent);
