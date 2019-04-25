@@ -336,7 +336,7 @@ public class Main extends Application {
 		ButtonBar buttonBar = new ButtonBar();
 
 		Button backButton = new Button("Back");
-		ButtonBar.setButtonData(backButton, ButtonData.BACK_PREVIOUS);
+		ButtonBar.setButtonData(backButton, ButtonBar.ButtonData.BACK_PREVIOUS);
 		backButton.setFont(Font.font("Palatino Linotyp", 15));
 		backButton.setMinWidth(100);
 		backButton.setMinHeight(43);
@@ -344,7 +344,7 @@ public class Main extends Application {
 		//questionCount--;
 
 		Button nextButton = new Button("Next");
-		ButtonBar.setButtonData(nextButton, ButtonData.NEXT_FORWARD);
+		ButtonBar.setButtonData(nextButton, ButtonBar.ButtonData.NEXT_FORWARD);
 		nextButton.setFont(Font.font("Palatino Linotyp", 15));
 		nextButton.setMinWidth(100);
 		nextButton.setMinHeight(43);
@@ -352,7 +352,7 @@ public class Main extends Application {
 		//questionCount++;
 
         Button submitButton = new Button("Submit");
-		ButtonBar.setButtonData(submitButton, ButtonData.FINISH);
+		ButtonBar.setButtonData(submitButton, ButtonBar.ButtonData.FINISH);
 		submitButton.setFont(Font.font("Palatino Linotyp", 15));
 		submitButton.setMinWidth(100);
 		submitButton.setMinHeight(43);
@@ -365,7 +365,7 @@ public class Main extends Application {
 		submitButton.setOnAction(submitEvent);
 			
 		Button enterButton = new Button("Enter");
-		ButtonBar.setButtonData(enterButton, ButtonData.APPLY);
+		ButtonBar.setButtonData(enterButton, ButtonBar.ButtonData.APPLY);
 		enterButton.setFont(Font.font("Palatino Linotyp", 15));
 		enterButton.setMinWidth(100);
 		enterButton.setMinHeight(43);
