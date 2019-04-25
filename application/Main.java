@@ -25,7 +25,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage)
     {
-        primaryStage.setTitle("Quiz Generator");
         setupGUI(primaryStage);
         primaryStage.show();
     }
@@ -46,6 +45,7 @@ public class Main extends Application {
      */
     private void setupGUI(Stage primaryStage)
     {
+        primaryStage.setTitle("Quiz Generator");
         // main setup
         VBox mainLayout = new VBox(75);
         mainLayout.setPadding(new Insets(75));
