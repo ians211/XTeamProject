@@ -240,6 +240,15 @@ public class Main extends Application {
 
         }
 
+        // Added textfield for number of questions - Andrew Frank
+        Label numQuestionsLabel = new Label("Number of questions in quiz:");
+        numQuestionsLabel.setFont(new Font("Palatino Linotype", 18));
+        numQuestionsLabel.setPadding(new Insets(10, 0, 0, 0));
+        TextField numQuestions = new TextField();
+        numQuestions.setPromptText("");
+        choices.add(numQuestionsLabel, 2, numChoices + 1);
+        choices.add(numQuestions, 2, numChoices + 2);
+
 
         Button cancel = new Button("Cancel");
         Button next = new Button("Start Quiz");
@@ -431,7 +440,7 @@ public class Main extends Application {
 
 
 
-        Button exit = new Button("Exit");
+        Button exit = new Button("Home");
         Button newQuiz = new Button("Generate new quiz");
         HBox bottomBox = new HBox();
         Pane spacer = new Pane();
