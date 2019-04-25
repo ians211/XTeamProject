@@ -293,10 +293,14 @@ public class Main extends Application {
         answerD.setToggleGroup(group);
         answerD.setFont(Font.font("Palatino Linotype", 20));
 
-        VBox vbox = new VBox(50);
-        vbox.getChildren().addAll(answerA, answerB, answerC, answerD);
-        vbox.setPadding(new Insets(100));
-        // keep track of which answer is chosen (mouse over and click)
+        Label correct = new Label("Correct"); // change to actual question,
+		correct.setFont(Font.font("Palatino Linotyp", 20));
+		Label incorrect = new Label("Incorrect"); // change to actual question,
+		incorrect.setFont(Font.font("Palatino Linotyp", 20));
+			
+		VBox vbox = new VBox(50);
+		vbox.getChildren().addAll(answerA, answerB, answerC, answerD, correct, incorrect);
+		// keep track of which answer is chosen (mouse over and click)
 
         // Picture for question
         Image image = new Image("application/science.jpg"); // change to picture specific to image
@@ -329,35 +333,54 @@ public class Main extends Application {
         };
 
         // Bottom bar of buttons and progress bar
-        ButtonBar buttonBar = new ButtonBar();
+		ButtonBar buttonBar = new ButtonBar();
 
-        Button backButton = new Button("Back");
-        ButtonBar.setButtonData(backButton, ButtonBar.ButtonData.BACK_PREVIOUS);
-        backButton.setFont(Font.font("Palatino Linotype", 20));
-        backButton.setMinWidth(100);
-        backButton.setOnAction(backEvent);
+		Button backButton = new Button("Back");
+		ButtonBar.setButtonData(backButton, ButtonData.BACK_PREVIOUS);
+		backButton.setFont(Font.font("Palatino Linotyp", 15));
+		backButton.setMinWidth(100);
+		backButton.setMinHeight(43);
+		backButton.setOnAction(backEvent);
+		//questionCount--;
 
-        Button nextButton = new Button("Next");
-        ButtonBar.setButtonData(nextButton, ButtonBar.ButtonData.NEXT_FORWARD);
-        nextButton.setFont(Font.font("Palatino Linotype", 20));
-        nextButton.setMinWidth(100);
-        nextButton.setOnAction(nextEvent);
+		Button nextButton = new Button("Next");
+		ButtonBar.setButtonData(nextButton, ButtonData.NEXT_FORWARD);
+		nextButton.setFont(Font.font("Palatino Linotyp", 15));
+		nextButton.setMinWidth(100);
+		nextButton.setMinHeight(43);
+		nextButton.setOnAction(nextEvent);
+		//questionCount++;
 
         Button submitButton = new Button("Submit");
-        ButtonBar.setButtonData(submitButton, ButtonBar.ButtonData.FINISH);
-        submitButton.setFont(Font.font("Palatino Linotype", 20));
-        submitButton.setMinWidth(150);
-        EventHandler<ActionEvent> submitEvent = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                results(primaryStage);
-            }
-        };
-        submitButton.setOnAction(submitEvent);
+		ButtonBar.setButtonData(submitButton, ButtonData.FINISH);
+		submitButton.setFont(Font.font("Palatino Linotyp", 15));
+		submitButton.setMinWidth(100);
+		submitButton.setMinHeight(43);
+		EventHandler<ActionEvent> submitEvent = new EventHandler<ActionEvent>() {
+		public void handle(ActionEvent e) {
+		// go to results screen if clicked
+		//primaryStage.setScene(scene2);
+			}
+		};
+		submitButton.setOnAction(submitEvent);
+			
+		Button enterButton = new Button("Enter");
+		ButtonBar.setButtonData(enterButton, ButtonData.APPLY);
+		enterButton.setFont(Font.font("Palatino Linotyp", 15));
+		enterButton.setMinWidth(100);
+		enterButton.setMinHeight(43);
+		EventHandler<ActionEvent> enterEvent = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				// if question correct on enter
+				correct.setFont(Font.font("Verdana Bold", 35));			
+		   }
+		};
+		enterButton.setOnAction(enterEvent);
+			
+		buttonBar.getButtons().addAll(backButton, enterButton, nextButton, submitButton, pb);
 
-        buttonBar.getButtons().addAll(backButton, nextButton, submitButton, pb);
-
-        HBox hbox = new HBox(30);
-        hbox.getChildren().addAll(backButton, pb, nextButton, submitButton);
+		HBox hbox = new HBox(10);
+		hbox.getChildren().addAll(backButton, pb, enterButton, nextButton, submitButton);
 
         primaryStage.setTitle("Quiz Generator");
 
