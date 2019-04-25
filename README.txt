@@ -4,14 +4,15 @@ Course: cs400
 Semester: Spring 2019
 Project name: Practice Quiz Generator
 Team Members:
-1. member name1, lecture, and email1@wisc.edu
-2. member name2, lecture, and email2@wisc.edu
-3. member name3, lecture, and email3@wisc.edu
-4. member name4, lecture, and email4@wisc.edu
+1. member Ian Arthur, lecture 2, and iarthur@wisc.edu
+2. member Sammy Kleedtke, lecture 2, and kleedtke@wisc.edu
+3. member Andrew Frank, lecture 2, and ajfrank5@wisc.edu
+4. member Nick Hayden, lecture 1, and nhayden@wisc.edu
 
 Notes or comments to the grader:
 
-Hello World
+
 [place any comments or notes that will help the grader here]
+Be nice
 
 
