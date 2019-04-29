@@ -241,19 +241,19 @@ public class Main extends Application {
         List<String> topics = questionBank.getTopics();
         int numChoices = topics.size();
         
-        List<CheckBox> checks = new ArrayList<CheckBox>();
+        List<CheckBox> checkMarks = new ArrayList<CheckBox>();
         List<Label> options = new ArrayList<Label>();
 
         for (int i = 0; i < numChoices; i++) {
 
-            checks.add(new CheckBox());
+            checkMarks.add(new CheckBox());
             options.add(new Label("Topic " + (i + 1) + ":" + topics.get(i)));
 
             options.get(i).setFont(new Font("Palatino Linotype", 18));
             options.get(i).setPadding(new Insets(3));
 
-            choices.add(checks.get(i), 1, i + 1);
-            choices.add(options.get(i), 2, i + 1);
+            choices.add(checkMarks.get(i), 1, i);
+            choices.add(options.get(i), 2, i);
 
         }
 
@@ -293,18 +293,18 @@ public class Main extends Application {
 
         next.setOnAction(e ->
         { 
-            quizScreen(primaryStage, initializeTopics(topics, checks));
+            quizScreen(primaryStage, initializeTopics(topics, checkMarks));
         });
     }
     
-    private List<Question> initializeTopics(List<String> topics, List<CheckBox> checks) {
+    private List<Question> initializeTopics(List<String> topics, List<CheckBox> checkMarks) {
       
       //all the possible questions for the quiz
       List<Question> allQuestions = new ArrayList<Question>();
       
-      for (int i = 0; i <checks.size(); i++) {
+      for (int i = 0; i <checkMarks.size(); i++) {
         
-        if (checks.get(i).isSelected()) {
+        if (checkMarks.get(i).isSelected()) {
           
           allQuestions.addAll(questionBank.getListOfQuestionsFromTopic(topics.get(i))); 
         
