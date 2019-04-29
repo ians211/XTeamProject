@@ -237,16 +237,17 @@ public class Main extends Application {
         message.setPadding(new Insets(10));
         root.setTop(message);
 
-
-
-        int numChoices = 5;
+        
+        List<String> topics = questionBank.getTopics();
+        int numChoices = topics.size();
+        
         List<CheckBox> checks = new ArrayList<CheckBox>();
         List<Label> options = new ArrayList<Label>();
 
         for (int i = 0; i < numChoices; i++) {
 
             checks.add(new CheckBox());
-            options.add(new Label("Topic " + (i + 1)));
+            options.add(new Label("Topic " + (i + 1) + ":" + topics.get(i)));
 
             options.get(i).setFont(new Font("Palatino Linotype", 18));
             options.get(i).setPadding(new Insets(3));
@@ -291,12 +292,29 @@ public class Main extends Application {
         });
 
         next.setOnAction(e ->
-        {
-            quizScreen(primaryStage);
+        { 
+            quizScreen(primaryStage, initializeTopics(topics, checks));
         });
     }
+    
+    private List<Question> initializeTopics(List<String> topics, List<CheckBox> checks) {
+      
+      //all the possible questions for the quiz
+      List<Question> allQuestions = new ArrayList<Question>();
+      
+      for (int i = 0; i <checks.size(); i++) {
+        
+        if (checks.get(i).isSelected()) {
+          
+          allQuestions.addAll(questionBank.getListOfQuestionsFromTopic(topics.get(i))); 
+        
+        }
+      }
+      
+      return allQuestions;
+    }
 
-    private void quizScreen(Stage primaryStage)
+    private void quizScreen(Stage primaryStage, List<Question> allQUestions)
     {
         // Question
         Label label = new Label("Question #1: What is your name?"); // change to actual question
