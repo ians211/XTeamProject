@@ -22,6 +22,8 @@ public class Main extends Application {
 	// John was here
 	// Ian was here
 
+    QuestionDataBase questionBank = new QuestionDataBase();
+
     /**
      * This is the JavaFX main method
      * @param primaryStage the main Stage
