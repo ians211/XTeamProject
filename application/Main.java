@@ -19,8 +19,6 @@ import java.util.List;
 
 public class Main extends Application {
 	
-	// John was here
-	// Ian was here
 
     QuestionDataBase questionBank = new QuestionDataBase();
 
@@ -52,12 +50,15 @@ public class Main extends Application {
     private void setupGUI(Stage primaryStage)
     {
         primaryStage.setTitle("Quiz Generator");
+        
         // main setup
         VBox mainLayout = new VBox(75);
         mainLayout.setPadding(new Insets(75));
+        
         // quiz generator title
         Label quizGen = new Label("Quiz Generator");
         quizGen.setFont(new Font("Palatino Linotype", 75));
+        
         // import questions with JSON filepath
         TextField jsonFilePath = new TextField();
         jsonFilePath.setPromptText("type in JSON filepath");
@@ -75,6 +76,7 @@ public class Main extends Application {
         HBox loadHBox = new HBox();
         loadHBox.getChildren().setAll(loadVBox);
         loadHBox.setAlignment(Pos.CENTER);
+        
         // bottom buttons (add question, generate quiz)
         HBox bottomButtons = new HBox(70);
         Button addQuestion = new Button("Add a Question");
@@ -97,6 +99,7 @@ public class Main extends Application {
         {
             selectQuizTopics(primaryStage);
         });
+    
     }
 
     /**
@@ -109,12 +112,15 @@ public class Main extends Application {
         // main setup
         int textFieldLength = 390;
         VBox mainLayout = new VBox(20);
+        
         // new question text
         Label newQuestion = new Label("New Question");
         newQuestion.setFont(new Font("Palatino Linotype", 75));
+        
         // textfield VBox
         VBox textFieldVBox = new VBox(10);
         int HBoxSpacing = 10;
+        
         // enter question
         HBox enterQuestionHBox = new HBox(HBoxSpacing);
         Label enterQuestion = new Label("Enter Question:");
@@ -123,6 +129,7 @@ public class Main extends Application {
         enterQuestionTextField.setPrefWidth(textFieldLength);
         enterQuestionHBox.getChildren().addAll(enterQuestion, enterQuestionTextField);
         enterQuestionHBox.setAlignment(Pos.CENTER);
+        
         // enter answer
         HBox enterAnswerHBox = new HBox(HBoxSpacing);
         Label enterAnswer = new Label("   Enter Answer:");
@@ -131,6 +138,7 @@ public class Main extends Application {
         enterAnswerTextField.setPrefWidth(textFieldLength);
         enterAnswerHBox.getChildren().addAll(enterAnswer, enterAnswerTextField);
         enterAnswerHBox.setAlignment(Pos.CENTER);
+        
         // enter option 1
         HBox enterOption1HBox = new HBox(HBoxSpacing);
         Label enterOption1 = new Label(" Enter Option 1:");
@@ -139,6 +147,7 @@ public class Main extends Application {
         enterOption1TextField.setPrefWidth(textFieldLength);
         enterOption1HBox.getChildren().addAll(enterOption1, enterOption1TextField);
         enterOption1HBox.setAlignment(Pos.CENTER);
+        
         // enter option 2
         HBox enterOption2HBox = new HBox(HBoxSpacing);
         Label enterOption2 = new Label(" Enter Option 2:");
@@ -147,6 +156,7 @@ public class Main extends Application {
         enterOption2TextField.setPrefWidth(textFieldLength);
         enterOption2HBox.getChildren().addAll(enterOption2, enterOption2TextField);
         enterOption2HBox.setAlignment(Pos.CENTER);
+        
         // enter option 3
         HBox enterOption3HBox = new HBox(HBoxSpacing);
         Label enterOption3 = new Label(" Enter Option 3:");
@@ -155,6 +165,7 @@ public class Main extends Application {
         enterOption3TextField.setPrefWidth(textFieldLength);
         enterOption3HBox.getChildren().addAll(enterOption3, enterOption3TextField);
         enterOption3HBox.setAlignment(Pos.CENTER);
+        
         // topic
         HBox topicHBox = new HBox(HBoxSpacing);
         Label topic = new Label("        Topic:");
@@ -164,6 +175,7 @@ public class Main extends Application {
         topicHBox.getChildren().addAll(topic, topicBox);
         topicHBox.setAlignment(Pos.CENTER);
         topicHBox.setPadding(new Insets(0, 242, 0, 0));
+        
         // enter filepath to save
         HBox enterFilepathHBox = new HBox(HBoxSpacing);
         Label enterFilepath = new Label("  JSON filepath:");
@@ -172,8 +184,10 @@ public class Main extends Application {
         enterFilepathTextField.setPrefWidth(textFieldLength);
         enterFilepathHBox.getChildren().addAll(enterFilepath, enterFilepathTextField);
         enterFilepathHBox.setAlignment(Pos.CENTER);
+        
         // populate textfield VBox
         textFieldVBox.getChildren().addAll(enterQuestionHBox, enterAnswerHBox, enterOption1HBox, enterOption2HBox, enterOption3HBox, topicHBox, enterFilepathHBox);
+        
         // bottom buttons (cancel, submit)
         HBox bottomButtons = new HBox(136);
         Button cancel = new Button("Cancel");
