@@ -12,6 +12,21 @@ public class Question
     private ImageView image;
     private ArrayList<Choice> choices;
 
+    public Question(String meta_data, String question, String topic, String imageFilepath, ArrayList<Choice> choices) {
+        this.meta_data = meta_data;
+        this.question = question;
+        this.topic = topic;
+        if(imageFilepath.equals("none"))
+        {
+            this.image = new ImageView("application/science.jpg");
+        }
+        else
+        {
+            this.image = new ImageView("application/" + imageFilepath);
+        }
+        this.choices = choices;
+    }
+
     public Question(String meta_data, String question, String topic, ImageView image, ArrayList<Choice> choices) {
         this.meta_data = meta_data;
         this.question = question;
