@@ -263,7 +263,7 @@ public class Main extends Application {
         for (int i = 0; i < numChoices; i++) {
 
             checkMarks.add(new CheckBox());
-            options.add(new Label("Topic " + (i + 1) + ":" + topics.get(i)));
+            options.add(new Label("Topic " + (i + 1) + ": " + topics.get(i)));
 
             options.get(i).setFont(new Font("Palatino Linotype", 18));
             options.get(i).setPadding(new Insets(3));
@@ -272,8 +272,6 @@ public class Main extends Application {
             grid.add(options.get(i), 2, i);
 
         }
-
-        
         
         
         // Added textfield for number of questions - Andrew Frank
@@ -284,6 +282,7 @@ public class Main extends Application {
         numQuestions.setPromptText("");
         grid.add(numQuestionsLabel, 2, numChoices + 1);
         grid.add(numQuestions, 2, numChoices + 2);
+        
 
 
         Button cancel = new Button("Cancel");
@@ -311,12 +310,26 @@ public class Main extends Application {
         });
 
         next.setOnAction(e ->
-        {           
-            quizScreen(primaryStage, initializeTopics(topics, checkMarks));
+        {                       
+             quizScreen(primaryStage, initializeTopics(topics, checkMarks), getNumberQuestions(numQuestions));
         });
     }
     
+    private int getNumberQuestions(TextField numQuestions) {
+      
+      int num = 10;
+      
+      try {
+        num = Integer.parseInt(numQuestions.getText());
+      } catch (Exception e) {
+        num = 10;
+      }      
+      
+      return num;
+    }
+    
     private List<Question> initializeTopics(List<String> topics, List<CheckBox> checkMarks) {
+      
       
       //all the possible questions for the quiz
       List<Question> allQuestions = new ArrayList<Question>();
@@ -333,8 +346,11 @@ public class Main extends Application {
       return allQuestions;
     }
 
-    private void quizScreen(Stage primaryStage, List<Question> allQuestions)
+    private void quizScreen(Stage primaryStage, List<Question> allQuestions, int numQuestions)
     {
+      
+        System.out.println(numQuestions);
+      
         // Question
         Label label = new Label("Question #1: What is your name?"); // change to actual question
         label.setFont(Font.font("Palatino Linotype", 30));
@@ -516,36 +532,64 @@ public class Main extends Application {
     }
 
     public void readFile(String jsonPath) {
+        
+      
         JSONParser jp = new JSONParser(); // create new jsonParser
         try {
+            
             Object ob = jp.parse(new FileReader(jsonPath)); // new file reader cast to object
             JSONObject jo = (JSONObject) ob; // cast object to jsonobject
             JSONArray ja = (JSONArray) jo.get("questionArray"); // get the first question in questionArray
-            Iterator<JSONObject> iterator = ja.iterator(); // new iterator over jsonArray
-            while(iterator.hasNext()) {
-                JSONObject question = (JSONObject) iterator.next(); // get first question, jsonObject
-                String meta = (String) question.get("meta-data"); // get metadata
+            
+            for(int j = 0; j < ja.size(); j++) {
+              
+                JSONObject question = (JSONObject) ja.get(j); // get first question, jsonObject
+                
+                String meta = (String) question.get("meta-data"); // get metadata  
+                
                 String qText = (String) question.get("questionText"); // get questiontext
-                String topic = (String) question.get("String"); // get the topic
+                
+                String topic = (String) question.get("topic"); // get the topic
+                
                 String imageFileName = (String) question.get("imageFilename"); // get the imageFile name
+                
+                if (imageFileName == null) {
+                  imageFileName = (String) question.get("image");
+                }
+                
+                if (imageFileName == null) {
+                  imageFileName = (String) question.get("imageFile");
+                }
+                
                 ArrayList<Choice> choices = new ArrayList<Choice>(); // new Choices array list
-                JSONArray jsonChoices = (JSONArray) question.get("choiceArray"); // cast to JSONArray, get the choices json array
-                Iterator<JSONObject> jcoIt = jsonChoices.iterator(); // iterator over the JSONArray of chocies
-                while(jcoIt.hasNext()) {
-                    JSONObject jsonChoice = jcoIt.next(); // get the next choice
+                JSONArray jsonChoices = (JSONArray) question.get("choiceArray"); // cast to JSONArray, get the choices json array               
+                
+                for (int i = 0; i < jsonChoices.size(); i++) {
+                    
+                    JSONObject jsonChoice = (JSONObject) jsonChoices.get(i); // get the next choice
                     String isCorrect = (String) jsonChoice.get("isCorrect"); // get String F or T
                     String choiceText = (String) jsonChoice.get("choiceText"); // get choice text
+                    
                     Boolean correctChoice; // boolean variable for correct choice
-                    if(isCorrect == "F") { // set the boolean variable
+                    
+
+                    if(isCorrect.equals("F")) { // set the boolean variable
                         correctChoice = false;
-                    }else {
+                    }
+                    
+                    else {
                         correctChoice = true;
                     }
+                    
+
                     Choice newChoice = new Choice(correctChoice, choiceText); // create a new choice
-                    choices.add(newChoice); // add choice to choices arrayList
+                    choices.add(newChoice); // add choice to choices arrayList                  
+                
                 }
-                Question newQuestion = new Question(meta, qText, topic, imageFileName, choices); // create the new question
+                
+                Question newQuestion = new Question(meta, qText, topic, imageFileName, choices); // create the new question               
                 questionBank.addQuestion(topic, newQuestion);
+                
             }
         } catch(Exception e) {
             System.out.print(e.getStackTrace());

@@ -37,6 +37,7 @@ public class Question
             this.image = new ImageView("application/" + imageFilepath);
         }
         this.choices = choices;
+    
     }
 
     /**
