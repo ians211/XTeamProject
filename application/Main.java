@@ -11,12 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -121,6 +124,7 @@ public class Main extends Application {
     {
         // main setup
         int textFieldLength = 390;
+        ImageView image = new ImageView("science.jpg");
         VBox mainLayout = new VBox(20);
         
         // new question text
@@ -186,6 +190,15 @@ public class Main extends Application {
         topicHBox.getChildren().addAll(topic, topicBox);
         topicHBox.setAlignment(Pos.CENTER);
         topicHBox.setPadding(new Insets(0, 242, 0, 0));
+
+        // choose image
+        HBox chooseImageHBox = new HBox(HBoxSpacing);
+        Label chooseImage = new Label(" Choose Image(optional):");
+        Button chooseImageButton = new Button("Browse");
+        Label imagePath = new Label();
+        imagePath.setPrefWidth(374);
+        chooseImageHBox.getChildren().addAll(chooseImage, chooseImageButton, imagePath);
+        chooseImageHBox.setAlignment(Pos.CENTER);
         
         // enter filepath to save
         HBox enterFilepathHBox = new HBox(HBoxSpacing);
@@ -197,7 +210,7 @@ public class Main extends Application {
         enterFilepathHBox.setAlignment(Pos.CENTER);
         
         // populate textfield VBox
-        textFieldVBox.getChildren().addAll(enterQuestionHBox, enterAnswerHBox, enterOption1HBox, enterOption2HBox, enterOption3HBox, topicHBox, enterFilepathHBox);
+        textFieldVBox.getChildren().addAll(enterQuestionHBox, enterAnswerHBox, enterOption1HBox, enterOption2HBox, enterOption3HBox, topicHBox, chooseImageHBox, enterFilepathHBox);
         
         // bottom buttons (cancel, submit)
         HBox bottomButtons = new HBox(136);
@@ -215,6 +228,37 @@ public class Main extends Application {
         Scene addQuestionScene = new Scene(mainLayout,800, 600);
         primaryStage.setScene(addQuestionScene);
 
+        chooseImageButton.setOnAction(e ->
+        {
+            FileChooser fileChooser = new FileChooser();
+            String filepath = "" + fileChooser.showOpenDialog(primaryStage).getAbsolutePath() + "";
+            System.out.println(filepath);
+            String filename;
+            try
+            {
+                int stringCutoff = filepath.lastIndexOf("\\") + 1;
+                if(stringCutoff == 0)
+                {
+                    filename = filepath;
+                }
+                else
+                {
+                    filename = filepath.substring(stringCutoff);
+                }
+                System.out.println(filename);
+                imagePath.setText(filename);
+                Image pic = new Image(new FileInputStream(filepath));
+                if(pic.getHeight() != 0)
+                {
+                    image.setImage(pic);
+                }
+            }
+            catch(FileNotFoundException exc)
+            {
+
+            }
+        });
+
         cancel.setOnAction(e ->
         {
             setupGUI(primaryStage);
@@ -227,7 +271,7 @@ public class Main extends Application {
             choices.add(new Choice(false, enterOption1TextField.getText()));
             choices.add(new Choice(false, enterOption2TextField.getText()));
             choices.add(new Choice(false, enterOption3TextField.getText()));
-            Question currQ = new Question("", enterQuestionTextField.getText(),topicBox.getValue(),"None",choices);
+            Question currQ = new Question("unused", enterQuestionTextField.getText(), topicBox.getValue(), image, choices);
             questionBank.addQuestion(topicBox.getValue(), currQ);
             setupGUI(primaryStage);
         });
@@ -392,7 +436,7 @@ public class Main extends Application {
 		// keep track of which answer is chosen (mouse over and click)
 
         // Picture for question
-        Image image = new Image("application/science.jpg"); // change to picture specific to image
+        Image image = new Image("science.jpg"); // change to picture specific to image
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(300);
         imageView.setFitWidth(400);
