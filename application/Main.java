@@ -13,8 +13,13 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Main extends Application {
@@ -89,6 +94,11 @@ public class Main extends Application {
         mainLayout.setAlignment(Pos.CENTER);
         Scene mainScene = new Scene(mainLayout, 800, 600);
         primaryStage.setScene(mainScene);
+
+        load.setOnAction(e ->
+        {
+            readFile(jsonFilePath.getText());
+        });
 
         addQuestion.setOnAction(e ->
         {
@@ -503,6 +513,43 @@ public class Main extends Application {
         {
             setupGUI(primaryStage);
         });
+    }
+
+    public void readFile(String jsonPath) {
+        JSONParser jp = new JSONParser(); // create new jsonParser
+        try {
+            Object ob = jp.parse(new FileReader(jsonPath)); // new file reader cast to object
+            JSONObject jo = (JSONObject) ob; // cast object to jsonobject
+            JSONArray ja = (JSONArray) jo.get("questionArray"); // get the first question in questionArray
+            Iterator<JSONObject> iterator = ja.iterator(); // new iterator over jsonArray
+            while(iterator.hasNext()) {
+                JSONObject question = (JSONObject) iterator.next(); // get first question, jsonObject
+                String meta = (String) question.get("meta-data"); // get metadata
+                String qText = (String) question.get("questionText"); // get questiontext
+                String topic = (String) question.get("String"); // get the topic
+                String imageFileName = (String) question.get("imageFilename"); // get the imageFile name
+                ArrayList<Choice> choices = new ArrayList<Choice>(); // new Choices array list
+                JSONArray jsonChoices = (JSONArray) question.get("choiceArray"); // cast to JSONArray, get the choices json array
+                Iterator<JSONObject> jcoIt = jsonChoices.iterator(); // iterator over the JSONArray of chocies
+                while(jcoIt.hasNext()) {
+                    JSONObject jsonChoice = jcoIt.next(); // get the next choice
+                    String isCorrect = (String) jsonChoice.get("isCorrect"); // get String F or T
+                    String choiceText = (String) jsonChoice.get("choiceText"); // get choice text
+                    Boolean correctChoice; // boolean variable for correct choice
+                    if(isCorrect == "F") { // set the boolean variable
+                        correctChoice = false;
+                    }else {
+                        correctChoice = true;
+                    }
+                    Choice newChoice = new Choice(correctChoice, choiceText); // create a new choice
+                    choices.add(newChoice); // add choice to choices arrayList
+                }
+                Question newQuestion = new Question(meta, qText, topic, imageFileName, choices); // create the new question
+                questionBank.addQuestion(topic, newQuestion);
+            }
+        } catch(Exception e) {
+            System.out.print(e.getStackTrace());
+        }
     }
 }
 
