@@ -30,11 +30,11 @@ public class Question
         this.topic = topic;
         if(imageFilepath.equals("none"))
         {
-            this.image = new ImageView("application/science.jpg");
+            this.image = new ImageView("science.jpg");
         }
         else
         {
-            this.image = new ImageView("application/" + imageFilepath);
+            this.image = new ImageView(imageFilepath);
         }
         this.choices = choices;
     
@@ -45,7 +45,7 @@ public class Question
      * @param meta_data if the Question has been used
      * @param question the question String
      * @param topic the topic/classification of this question
-     * @param image 
+     * @param image the image to be used for the question
      * @param choices the ArrayList of possible choices for this question
      */
     public Question(String meta_data, String question, String topic, ImageView image, ArrayList<Choice> choices) {

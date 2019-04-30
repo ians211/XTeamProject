@@ -178,10 +178,11 @@ public class Main extends Application {
         
         // topic
         HBox topicHBox = new HBox(HBoxSpacing);
-        Label topic = new Label("        Topic:");
+        Label topic = new Label("                       Topic:");
         ComboBox<String> topicBox = new ComboBox<>();
-        topicBox.setPromptText("Select Topic");
-        topicBox.getItems().addAll("Sample topic 1", "Sample topic 2", "Sample topic 3", "...");
+        topicBox.setPromptText("Select or Type Topic");
+        topicBox.getItems().addAll(questionBank.getTopics());
+        topicBox.setEditable(true);
         topicHBox.getChildren().addAll(topic, topicBox);
         topicHBox.setAlignment(Pos.CENTER);
         topicHBox.setPadding(new Insets(0, 242, 0, 0));
@@ -221,7 +222,13 @@ public class Main extends Application {
 
         submit.setOnAction(e ->
         {
-            // code to save question to JSON file
+            ArrayList<Choice> choices = new ArrayList<Choice>();
+            choices.add(new Choice(true, enterAnswerTextField.getText()));
+            choices.add(new Choice(false, enterOption1TextField.getText()));
+            choices.add(new Choice(false, enterOption2TextField.getText()));
+            choices.add(new Choice(false, enterOption3TextField.getText()));
+            Question currQ = new Question("", enterQuestionTextField.getText(),topicBox.getValue(),"None",choices);
+            questionBank.addQuestion(topicBox.getValue(), currQ);
             setupGUI(primaryStage);
         });
     }
