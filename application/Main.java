@@ -218,25 +218,31 @@ public class Main extends Application {
 
     private void selectQuizTopics(Stage primaryStage)
     {
+        
+        
         BorderPane root = new BorderPane();
 
-        GridPane choices = new GridPane();
-        choices.setPadding(new Insets(5));
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(5));
 
         Scene scene = new Scene(root,800,600);
 
+        //set title
         primaryStage.setTitle("Possible Topics");
 
+        //change color of the background
         root.setStyle("-fx-background-color: #80b380");
-        choices.setStyle("-fx-background-color: #80b380");
+        grid.setStyle("-fx-background-color: #80b380");
 
-        root.setCenter(choices);
+        root.setCenter(grid);
 
+        //Create a new message
         Label message = new Label("SELECT QUIZ TOPICS!");
         message.setFont(new Font("Palatino Linotype", 25));
         message.setPadding(new Insets(10));
         root.setTop(message);
 
+        
         
         List<String> topics = questionBank.getTopics();
         int numChoices = topics.size();
@@ -252,19 +258,22 @@ public class Main extends Application {
             options.get(i).setFont(new Font("Palatino Linotype", 18));
             options.get(i).setPadding(new Insets(3));
 
-            choices.add(checkMarks.get(i), 1, i);
-            choices.add(options.get(i), 2, i);
+            grid.add(checkMarks.get(i), 1, i);
+            grid.add(options.get(i), 2, i);
 
         }
 
+        
+        
+        
         // Added textfield for number of questions - Andrew Frank
         Label numQuestionsLabel = new Label("Number of questions in quiz:");
         numQuestionsLabel.setFont(new Font("Palatino Linotype", 18));
         numQuestionsLabel.setPadding(new Insets(10, 0, 0, 0));
         TextField numQuestions = new TextField();
         numQuestions.setPromptText("");
-        choices.add(numQuestionsLabel, 2, numChoices + 1);
-        choices.add(numQuestions, 2, numChoices + 2);
+        grid.add(numQuestionsLabel, 2, numChoices + 1);
+        grid.add(numQuestions, 2, numChoices + 2);
 
 
         Button cancel = new Button("Cancel");
@@ -292,7 +301,7 @@ public class Main extends Application {
         });
 
         next.setOnAction(e ->
-        { 
+        {           
             quizScreen(primaryStage, initializeTopics(topics, checkMarks));
         });
     }
@@ -314,7 +323,7 @@ public class Main extends Application {
       return allQuestions;
     }
 
-    private void quizScreen(Stage primaryStage, List<Question> allQUestions)
+    private void quizScreen(Stage primaryStage, List<Question> allQuestions)
     {
         // Question
         Label label = new Label("Question #1: What is your name?"); // change to actual question
