@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Quiz
 {
     ArrayList<Question> questions;
-
     int numberAnswered;
     int numberCorrect;
 
@@ -33,6 +32,6 @@ public class Quiz
 
     public int getPercentCorrect()
     {
-        return 0;
+        return (int)((((double)(numberCorrect))/((double)(numberAnswered))) * 100);
     }
 }
