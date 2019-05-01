@@ -84,8 +84,8 @@ public class Question
     }
 
     /**
-     * 
-     * @return 
+     * Image getter
+     * @return the image associated with this question
      */
     public ImageView getImage()
     {
