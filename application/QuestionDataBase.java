@@ -5,10 +5,18 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * This class represents the question database (by utilizing a hashtable for
+ * topics and ArrayList of questions) which will contain every question for each
+ * specific topic.
+ */
 public class QuestionDataBase
 {
-    Hashtable<String, ArrayList<Question>> questionBank;
+    Hashtable<String, ArrayList<Question>> questionBank; // the hashtable of questions according to topic
 
+    /**
+     * This constructor creates the new hashtable.
+     */
     public QuestionDataBase()
     {
         questionBank = new Hashtable<>();

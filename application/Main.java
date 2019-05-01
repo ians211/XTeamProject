@@ -18,9 +18,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +26,7 @@ import java.util.List;
 public class Main extends Application {
 	
 
-    QuestionDataBase questionBank = new QuestionDataBase();
+    private QuestionDataBase questionBank = new QuestionDataBase();
 
     /**
      * This is the JavaFX main method
@@ -179,7 +177,16 @@ public class Main extends Application {
         enterOption3TextField.setPrefWidth(textFieldLength);
         enterOption3HBox.getChildren().addAll(enterOption3, enterOption3TextField);
         enterOption3HBox.setAlignment(Pos.CENTER);
-        
+
+        // enter option 4
+        HBox enterOption4HBox = new HBox(HBoxSpacing);
+        Label enterOption4 = new Label(" Enter Option 4:");
+        TextField enterOption4TextField = new TextField();
+        enterOption4TextField.setPromptText("Enter Option 4 Here");
+        enterOption4TextField.setPrefWidth(textFieldLength);
+        enterOption4HBox.getChildren().addAll(enterOption4, enterOption4TextField);
+        enterOption4HBox.setAlignment(Pos.CENTER);
+
         // topic
         HBox topicHBox = new HBox(HBoxSpacing);
         Label topic = new Label("                       Topic:");
@@ -202,15 +209,17 @@ public class Main extends Application {
         
         // enter filepath to save
         HBox enterFilepathHBox = new HBox(HBoxSpacing);
-        Label enterFilepath = new Label("  JSON filepath:");
+        Label enterFilepath = new Label("     JSON filepath:");
         TextField enterFilepathTextField = new TextField();
         enterFilepathTextField.setPromptText("Filepath to Save Question");
-        enterFilepathTextField.setPrefWidth(textFieldLength);
-        enterFilepathHBox.getChildren().addAll(enterFilepath, enterFilepathTextField);
+        enterFilepathTextField.setPrefWidth(textFieldLength - 100);
+        CheckBox save = new CheckBox("save to file?");
+        save.setPrefWidth(100);
+        enterFilepathHBox.getChildren().addAll(enterFilepath, enterFilepathTextField, save);
         enterFilepathHBox.setAlignment(Pos.CENTER);
         
         // populate textfield VBox
-        textFieldVBox.getChildren().addAll(enterQuestionHBox, enterAnswerHBox, enterOption1HBox, enterOption2HBox, enterOption3HBox, topicHBox, chooseImageHBox, enterFilepathHBox);
+        textFieldVBox.getChildren().addAll(enterQuestionHBox, enterAnswerHBox, enterOption1HBox, enterOption2HBox, enterOption3HBox, enterOption4HBox, topicHBox, chooseImageHBox, enterFilepathHBox);
         
         // bottom buttons (cancel, submit)
         HBox bottomButtons = new HBox(136);
@@ -266,13 +275,98 @@ public class Main extends Application {
 
         submit.setOnAction(e ->
         {
-            ArrayList<Choice> choices = new ArrayList<Choice>();
+            /*ArrayList<Choice> choices = new ArrayList<Choice>();
             choices.add(new Choice(true, enterAnswerTextField.getText()));
             choices.add(new Choice(false, enterOption1TextField.getText()));
             choices.add(new Choice(false, enterOption2TextField.getText()));
             choices.add(new Choice(false, enterOption3TextField.getText()));
             Question currQ = new Question("unused", enterQuestionTextField.getText(), topicBox.getValue(), image, choices);
-            questionBank.addQuestion(topicBox.getValue(), currQ);
+            questionBank.addQuestion(topicBox.getValue(), currQ);*/
+
+
+            boolean validInputs = true;//variable to see if valid inputs
+            //check if inputs are valid
+            if(enterQuestionTextField.getText().equals("")) {
+                validInputs=false;
+            }
+            if(topicBox.getValue().equals("")) {
+                validInputs=false;
+            }
+            if(enterAnswerTextField.getText().equals("")) {
+                validInputs=false;
+            }
+            if(enterOption1TextField.getText().equals("")) {
+                validInputs=false;
+            }
+            if(enterOption2TextField.getText().equals("")) {
+                validInputs=false;
+            }
+            if(enterOption3TextField.getText().equals("")) {
+                validInputs=false;
+            }
+            if(enterOption4TextField.getText().equals("")) {
+                validInputs=false;
+            }
+            //if inputs are valid add question to questionBank
+            if (validInputs) {
+                //create array of choices
+                ArrayList<Choice> choices = new ArrayList<Choice>();
+                choices.add(new Choice(true, enterAnswerTextField.getText()));
+                choices.add(new Choice(false, enterOption1TextField.getText()));
+                choices.add(new Choice(false, enterOption2TextField.getText()));
+                choices.add(new Choice(false, enterOption3TextField.getText()));
+                choices.add(new Choice(false, enterOption4TextField.getText()));
+                //add question to bank
+                Question currQ = new Question("unused", enterQuestionTextField.getText(), topicBox.getValue(), image, choices);
+                questionBank.addQuestion(topicBox.getValue(), currQ);
+                //if selected to save file
+                if (save.isSelected()) {
+                    //create JsonObjects question and add data
+                    JSONObject question = new JSONObject();
+                    question.put("meta-data", "unused");
+                    question.put("questionText", enterQuestionTextField.getText());
+                    question.put("topic", topicBox.getValue());
+                    question.put("image", "none");
+                    //create JSON array of choices
+                    JSONArray choicesJSON = new JSONArray();
+                    JSONObject answer = new JSONObject();
+                    answer.put("isCorrect", "T");
+                    answer.put("choice", enterAnswerTextField.getText());
+                    JSONObject choice1 = new JSONObject();
+                    choice1.put("isCorrect", "F");
+                    choice1.put("choice", enterOption1TextField.getText());
+                    JSONObject choice2 = new JSONObject();
+                    choice2.put("isCorrect", "F");
+                    choice2.put("choice", enterOption2TextField.getText());
+                    JSONObject choice3 = new JSONObject();
+                    choice3.put("isCorrect", "F");
+                    choice3.put("choice", enterOption3TextField.getText());
+                    JSONObject choice4 = new JSONObject();
+                    choice4.put("isCorrect", "F");
+                    choice4.put("choice", enterOption3TextField.getText());
+                    choicesJSON.add(answer);
+                    choicesJSON.add(choice1);
+                    choicesJSON.add(choice2);
+                    choicesJSON.add(choice3);
+                    choicesJSON.add(choice4);
+                    question.put("choiceArray", choicesJSON);
+                    JSONArray questionBankJSON = new JSONArray();
+                    questionBankJSON.add(question); //add question to question bank
+                    JSONObject userQuestion = new JSONObject(); //add question bank to file
+                    userQuestion.put("questionArray", questionBankJSON);
+                    //create a new file with JSON data
+                    try (FileWriter file = new FileWriter(enterFilepathTextField.getText())) {
+
+                        file.write(userQuestion.toJSONString());
+                        file.close();
+
+                    } catch (IOException d) {
+                        d.printStackTrace();
+                    }
+                }
+            }
+
+
             setupGUI(primaryStage);
         });
     }
