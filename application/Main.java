@@ -290,6 +290,7 @@ public class Main extends Application {
             }
             if(topicBox.getValue() == null) {
                 validInputs=false;
+                // could not figure out how to change prompt text color of combobox so I changed the prompt text instead
                 topicBox.setPromptText("TOPIC REQUIRED");
             }
             if(enterAnswerTextField.getText().equals("")) {
