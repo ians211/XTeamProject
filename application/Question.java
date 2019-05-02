@@ -1,7 +1,10 @@
 package application;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -34,7 +37,14 @@ public class Question
         }
         else
         {
-            this.image = new ImageView(imageFilepath);
+            try
+            {
+                this.image = new ImageView(new Image(new FileInputStream(imageFilepath)));
+            }
+            catch(FileNotFoundException e)
+            {
+                this.image = new ImageView(imageFilepath);
+            }
         }
         this.choices = choices;
     

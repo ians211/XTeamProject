@@ -867,7 +867,7 @@ public class Main extends Application {
                     question.put("meta-data", currQuestions.get(j).getMeta_data());
                     question.put("questionText", currQuestions.get(j).getQuestion());
                     question.put("topic", topics.get(i));
-                    question.put("image", currQuestions.get(j).getImage());
+                    question.put("image", "none");
                     //create JSON array of choices
                     ArrayList<Choice> choices = currQuestions.get(j).getChoices();
                     JSONArray choicesJSON = new JSONArray();
@@ -971,6 +971,7 @@ public class Main extends Application {
     {
         label.setText("Question #" + (quiz.getQuestionNum() + 1) + " out of " + quiz.getNumQuestions() + ": " + question.getQuestion());
         ArrayList<Choice> qChoices = question.getChoices();
+        Collections.shuffle(qChoices);
         vbox.getChildren().clear();
         for (int j = 0; j < qChoices.size(); j++) {
 
