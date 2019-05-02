@@ -19,6 +19,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main extends Application {
@@ -413,11 +414,11 @@ public class Main extends Application {
 
         
         
-        List<String> topics = questionBank.getTopics();
+        ArrayList<String> topics = questionBank.getTopics();
         int numChoices = topics.size();
         
-        List<CheckBox> checkMarks = new ArrayList<CheckBox>();
-        List<Label> options = new ArrayList<Label>();
+        ArrayList<CheckBox> checkMarks = new ArrayList<CheckBox>();
+        ArrayList<Label> options = new ArrayList<Label>();
 
         for (int i = 0; i < numChoices; i++) {
 
@@ -487,11 +488,11 @@ public class Main extends Application {
       return num;
     }
     
-    private List<Question> initializeTopics(List<String> topics, List<CheckBox> checkMarks) {
+    private ArrayList<Question> initializeTopics(ArrayList<String> topics, ArrayList<CheckBox> checkMarks) {
       
       
       //all the possible questions for the quiz
-      List<Question> allQuestions = new ArrayList<Question>();
+      ArrayList<Question> allQuestions = new ArrayList<Question>();
       
       for (int i = 0; i <checkMarks.size(); i++) {
         
@@ -505,142 +506,268 @@ public class Main extends Application {
       return allQuestions;
     }
 
-    private void quizScreen(Stage primaryStage, List<Question> allQuestions, int numQuestions)
-    {
-      
-        System.out.println(numQuestions);
-      
-        // Question
-        Label label = new Label("Question #1: What is your name?"); // change to actual question
-        label.setFont(Font.font("Palatino Linotype", 30));
-        label.setPadding(new Insets(20));
+    private void quizScreen(Stage primaryStage, ArrayList<Question> allQuestions, int numQuestions) {
+
+        Quiz quiz = new Quiz(allQuestions, numQuestions);
+
+        ArrayList<Question> questionList = quiz.getQuestionList(numQuestions);
+
+        Label label = new Label("Question #1: " + questionList.get(0).getQuestion());
+
+        label.setFont(Font.font("Palatino Linotype", 12));
 
         // Answer choices
+        ArrayList<Choice> qChoices = allQuestions.get(0).getChoices();
+
+        Collections.shuffle(qChoices);
+
+        VBox vbox = new VBox(50);
         ToggleGroup group = new ToggleGroup();
-        RadioButton answerA = new RadioButton("A. Don't choose this answer"); // change to correct options for
-        // specific question
-        answerA.setToggleGroup(group);
-        answerA.setFont(Font.font("Palatino Linotype", 20));
 
-        RadioButton answerB = new RadioButton("B. Don't choose this answer");
-        answerB.setToggleGroup(group);
-        answerB.setFont(Font.font("Palatino Linotype", 20));
+        for (int j = 0; j < qChoices.size(); j++) {
 
-        RadioButton answerC = new RadioButton("C. Choose this answer");
-        answerC.setToggleGroup(group);
-        answerC.setFont(Font.font("Palatino Linotype", 20));
+            System.out.println(qChoices.size());
 
-        RadioButton answerD = new RadioButton("D. Don't choose this answer");
-        answerD.setToggleGroup(group);
-        answerD.setFont(Font.font("Palatino Linotype", 20));
+            System.out.println(qChoices.get(j).getChoice());
+
+            RadioButton answer = new RadioButton(qChoices.get(j).getChoice()); // change to correct options for
+
+            answer.setToggleGroup(group);
+
+            vbox.getChildren().addAll(answer);
+
+            answer.setFont(Font.font("Palatino Linotype", 10));
+
+        }
 
         Label correct = new Label("Correct"); // change to actual question,
-		correct.setFont(Font.font("Palatino Linotyp", 20));
-		Label incorrect = new Label("Incorrect"); // change to actual question,
-		incorrect.setFont(Font.font("Palatino Linotyp", 20));
-			
-		VBox vbox = new VBox(50);
-		vbox.getChildren().addAll(answerA, answerB, answerC, answerD, correct, incorrect);
-		// keep track of which answer is chosen (mouse over and click)
+
+        correct.setFont(Font.font("Palatino Linotyp", 20));
+
+        Label incorrect = new Label("Incorrect"); // change to actual question,
+
+        incorrect.setFont(Font.font("Palatino Linotyp", 20));
+
+        vbox.getChildren().addAll(correct, incorrect);
 
         // Picture for question
-        Image image = new Image("science.jpg"); // change to picture specific to image
-        ImageView imageView = new ImageView(image);
+
+        ImageView imageView = questionList.get(0).getImage(); // change to picture specific to image
+
         imageView.setFitHeight(300);
+
         imageView.setFitWidth(400);
 
         // Progress of quiz
+
         ProgressBar pb = new ProgressBar();
+
         pb.setProgress(0);
+
         pb.setMinWidth(360);
+
         pb.setMinHeight(43);
+
         EventHandler<ActionEvent> nextEvent = new EventHandler<ActionEvent>() {
+
             double i = 0;
 
             public void handle(ActionEvent e) {
+
                 // set progress to different level of progressbar
-                i = pb.getProgress() + 0.1; // change 0.1 to 1/number of questions
+
+                i = pb.getProgress() + (1 / numQuestions); // change 0.1 to 1/number of questions
+
                 pb.setProgress(i);
+
+                quiz.setQuestionNum(quiz.getQuestionNum() + 1);
+                if(quiz.getQuestionNum() < quiz.getNumQuestions())
+                {
+                    setQuestion(questionList.get(quiz.getQuestionNum()), label, vbox, group, quiz);
+                }
+                else
+                {
+                    results(primaryStage, quiz);
+                }
             }
+
         };
+
         EventHandler<ActionEvent> backEvent = new EventHandler<ActionEvent>() {
+
             double i = 0;
 
             public void handle(ActionEvent e) {
+
                 // set progress to different level of progressbar
-                i = pb.getProgress() - 0.1; // change 0.1 to 1/number of questions
+
+                i = pb.getProgress() - (1 / numQuestions); // change 0.1 to 1/number of questions
+
                 pb.setProgress(i);
+
+                if (i > 0) {
+                    i = i - 2;
+                } else {
+                    selectQuizTopics(primaryStage);
+                }
+
             }
+
         };
 
         // Bottom bar of buttons and progress bar
-		ButtonBar buttonBar = new ButtonBar();
 
-		Button backButton = new Button("Back");
-		ButtonBar.setButtonData(backButton, ButtonBar.ButtonData.BACK_PREVIOUS);
-		backButton.setFont(Font.font("Palatino Linotyp", 15));
-		backButton.setMinWidth(100);
-		backButton.setMinHeight(43);
-		backButton.setOnAction(backEvent);
-		//questionCount--;
+        ButtonBar buttonBar = new ButtonBar();
 
-		Button nextButton = new Button("Next");
-		ButtonBar.setButtonData(nextButton, ButtonBar.ButtonData.NEXT_FORWARD);
-		nextButton.setFont(Font.font("Palatino Linotyp", 15));
-		nextButton.setMinWidth(100);
-		nextButton.setMinHeight(43);
-		nextButton.setOnAction(nextEvent);
-		//questionCount++;
+        Button backButton = new Button("Back");
+
+        ButtonBar.setButtonData(backButton, ButtonBar.ButtonData.BACK_PREVIOUS);
+
+        backButton.setFont(Font.font("Palatino Linotyp", 15));
+
+        backButton.setMinWidth(100);
+
+        backButton.setMinHeight(43);
+
+        backButton.setOnAction(backEvent);
+
+        // questionCount--;
+
+        Button nextButton = new Button("Next");
+
+        ButtonBar.setButtonData(nextButton, ButtonBar.ButtonData.NEXT_FORWARD);
+
+        nextButton.setFont(Font.font("Palatino Linotyp", 15));
+
+        nextButton.setMinWidth(100);
+
+        nextButton.setMinHeight(43);
+
+        nextButton.setOnAction(nextEvent);
+
+        // questionCount++;
 
         Button submitButton = new Button("Submit");
-		ButtonBar.setButtonData(submitButton, ButtonBar.ButtonData.FINISH);
-		submitButton.setFont(Font.font("Palatino Linotyp", 15));
-		submitButton.setMinWidth(100);
-		submitButton.setMinHeight(43);
-		EventHandler<ActionEvent> submitEvent = new EventHandler<ActionEvent>() {
-		public void handle(ActionEvent e) {
-		// go to results screen if clicked
-            results(primaryStage);
-			}
-		};
-		submitButton.setOnAction(submitEvent);
-			
-		Button enterButton = new Button("Enter");
-		ButtonBar.setButtonData(enterButton, ButtonBar.ButtonData.APPLY);
-		enterButton.setFont(Font.font("Palatino Linotyp", 15));
-		enterButton.setMinWidth(100);
-		enterButton.setMinHeight(43);
-		EventHandler<ActionEvent> enterEvent = new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				// if question correct on enter
-				correct.setFont(Font.font("Verdana Bold", 35));			
-		   }
-		};
-		enterButton.setOnAction(enterEvent);
-			
-		buttonBar.getButtons().addAll(backButton, enterButton, nextButton, submitButton, pb);
 
-		HBox hbox = new HBox(10);
-		hbox.getChildren().addAll(backButton, pb, enterButton, nextButton, submitButton);
+        ButtonBar.setButtonData(submitButton, ButtonBar.ButtonData.FINISH);
+
+        submitButton.setFont(Font.font("Palatino Linotyp", 15));
+
+        submitButton.setMinWidth(100);
+
+        submitButton.setMinHeight(43);
+
+        /*EventHandler<ActionEvent> submitEvent = new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent e) {
+
+                // go to results screen if clicked
+
+                results(primaryStage);
+
+            }
+
+        };*/
+
+        //submitButton.setOnAction(submitEvent);
+
+        Button enterButton = new Button("Enter");
+
+        ButtonBar.setButtonData(enterButton, ButtonBar.ButtonData.APPLY);
+
+        enterButton.setFont(Font.font("Palatino Linotyp", 15));
+
+        enterButton.setMinWidth(100);
+
+        enterButton.setMinHeight(43);
+
+        EventHandler<ActionEvent> enterEvent = new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent e) {
+
+                // if question correct on enter
+
+                String correctAnswer = "";
+                for(int x = 0; x < questionList.get(quiz.getQuestionNum()).getChoices().size(); x++)
+                {
+                    if(questionList.get(quiz.getQuestionNum()).getChoices().get(x).isCorrect())
+                    {
+                        correctAnswer = questionList.get(quiz.getQuestionNum()).getChoices().get(x).getChoice();
+                    }
+                }
+
+                for(int x = 0; x < vbox.getChildren().size(); x++)
+                {
+                    if(vbox.getChildren().get(x) instanceof RadioButton)
+                    {
+                        RadioButton radioButton = (RadioButton)vbox.getChildren().get(x);
+                        if(radioButton.isSelected())
+                        {
+                            if(radioButton.getText().equals(correctAnswer))
+                            {
+                                correct.setFont(Font.font("Verdana Bold", 35));
+                            }
+                            else
+                            {
+                                incorrect.setFont(Font.font("Verdana Bold", 35));
+                            }
+                        }
+                    }
+                }
+
+                for(int x = 0; x < vbox.getChildren().size(); x++)
+                {
+                    if(vbox.getChildren().get(x) instanceof RadioButton)
+                    {
+                        RadioButton radioButton = (RadioButton)vbox.getChildren().get(x);
+                        radioButton.setDisable(true);
+                    }
+                }
+
+            }
+
+        };
+
+        enterButton.setOnAction(enterEvent);
+
+        buttonBar.getButtons().addAll(backButton, enterButton, nextButton, submitButton, pb);
+
+        HBox hbox = new HBox(10);
+
+        hbox.getChildren().addAll(backButton, pb, enterButton, nextButton, submitButton);
 
         primaryStage.setTitle("Quiz Generator");
 
         BorderPane root = new BorderPane();
+
         Scene scene = new Scene(root, 800, 600);
+
         // background color
+
         root.setStyle("-fx-background-color: #80b380;");
+
         // layout
+
         root.setBottom(hbox);
+
         root.setRight(vbox);
+
         root.setAlignment(vbox, Pos.CENTER_RIGHT);
+
         root.setLeft(imageView);
+
         root.setAlignment(imageView, Pos.CENTER_LEFT);
+
         root.setTop(label);
+
         root.setAlignment(label, Pos.TOP_CENTER);
+
         primaryStage.setScene(scene);
+
+
     }
 
-    private void results(Stage primaryStage)
+    private void results(Stage primaryStage, Quiz quiz)
     {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #80b380");
@@ -656,9 +783,9 @@ public class Main extends Application {
         VBox leftBox = new VBox();
         leftBox.setPadding(new Insets(10));
         leftBox.setSpacing(8);
-        Label finalScore = new Label("Final Score:");
-        Label answered = new Label("You answered");
-        Label totalQuestions = new Label("Total questions");
+        Label finalScore = new Label("Final Score: " + quiz.getPercentCorrect());
+        Label answered = new Label("You answered " + quiz.getNumberAnswered() + "questions");
+        Label totalQuestions = new Label("Total questions: " + quiz.getNumQuestions());
         finalScore.setFont(new Font("Palatino Linotype", 20));
         answered.setFont(new Font("Palatino Linotype", 20));
         totalQuestions.setFont(new Font("Palatino Linotype", 20));
@@ -728,7 +855,12 @@ public class Main extends Application {
                     JSONObject jsonChoice = (JSONObject) jsonChoices.get(i); // get the next choice
                     String isCorrect = (String) jsonChoice.get("isCorrect"); // get String F or T
                     String choiceText = (String) jsonChoice.get("choiceText"); // get choice text
-                    
+
+                    if(choiceText == null)
+                    {
+                        choiceText = (String) jsonChoice.get("choice");
+                    }
+
                     Boolean correctChoice; // boolean variable for correct choice
                     
 
@@ -753,6 +885,37 @@ public class Main extends Application {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setQuestion(Question question, Label label, VBox vbox, ToggleGroup group, Quiz quiz)
+    {
+        label.setText("Question #" + (quiz.getQuestionNum() + 1) + ": " + question.getQuestion());
+        ArrayList<Choice> qChoices = question.getChoices();
+        vbox.getChildren().clear();
+        for (int j = 0; j < qChoices.size(); j++) {
+
+            System.out.println(qChoices.size());
+
+            System.out.println(qChoices.get(j).getChoice());
+
+            RadioButton answer = new RadioButton(qChoices.get(j).getChoice()); // change to correct options for
+
+            answer.setToggleGroup(group);
+
+            vbox.getChildren().addAll(answer);
+
+            answer.setFont(Font.font("Palatino Linotype", 10));
+
+        }
+        Label correct = new Label("Correct"); // change to actual question,
+
+        correct.setFont(Font.font("Palatino Linotyp", 20));
+
+        Label incorrect = new Label("Incorrect"); // change to actual question,
+
+        incorrect.setFont(Font.font("Palatino Linotyp", 20));
+
+        vbox.getChildren().addAll(correct, incorrect);
     }
 }
 
