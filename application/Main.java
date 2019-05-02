@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -20,7 +19,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Main extends Application {
@@ -288,17 +286,28 @@ public class Main extends Application {
             //check if inputs are valid
             if(enterQuestionTextField.getText().equals("")) {
                 validInputs=false;
+                enterQuestionTextField.setStyle("-fx-prompt-text-fill: #e2091e");
             }
-            if(topicBox.getValue().equals("")) {
+            if(topicBox.getValue() == null) {
                 validInputs=false;
+                topicBox.setPromptText("TOPIC REQUIRED");
             }
             if(enterAnswerTextField.getText().equals("")) {
                 validInputs=false;
+                enterAnswerTextField.setStyle("-fx-prompt-text-fill: #e2091e");
             }
             if(enterOption1TextField.getText().equals("")) {
                 validInputs=false;
+                enterOption1TextField.setStyle("-fx-prompt-text-fill: #e2091e");
             }
-            if(enterOption2TextField.getText().equals("")) {
+            if(enterFilepathTextField.getText().equals("") && save.isSelected()) {
+                validInputs=false;
+                enterFilepathTextField.setStyle("-fx-prompt-text-fill: #e2091e");
+            }
+            else {
+                enterFilepathTextField.setStyle("-fx-prompt-text-fill: silver");
+            }
+            /*if(enterOption2TextField.getText().equals("")) {
                 validInputs=false;
             }
             if(enterOption3TextField.getText().equals("")) {
@@ -306,16 +315,19 @@ public class Main extends Application {
             }
             if(enterOption4TextField.getText().equals("")) {
                 validInputs=false;
-            }
+            }*/
             //if inputs are valid add question to questionBank
             if (validInputs) {
                 //create array of choices
                 ArrayList<Choice> choices = new ArrayList<Choice>();
                 choices.add(new Choice(true, enterAnswerTextField.getText()));
                 choices.add(new Choice(false, enterOption1TextField.getText()));
-                choices.add(new Choice(false, enterOption2TextField.getText()));
-                choices.add(new Choice(false, enterOption3TextField.getText()));
-                choices.add(new Choice(false, enterOption4TextField.getText()));
+                if(!enterOption2TextField.getText().equals(""))
+                    choices.add(new Choice(false, enterOption2TextField.getText()));
+                if(!enterOption3TextField.getText().equals(""))
+                    choices.add(new Choice(false, enterOption3TextField.getText()));
+                if(!enterOption4TextField.getText().equals(""))
+                    choices.add(new Choice(false, enterOption4TextField.getText()));
                 //add question to bank
                 Question currQ = new Question("unused", enterQuestionTextField.getText(), topicBox.getValue(), image, choices);
                 questionBank.addQuestion(topicBox.getValue(), currQ);
@@ -346,9 +358,12 @@ public class Main extends Application {
                     choice4.put("choice", enterOption3TextField.getText());
                     choicesJSON.add(answer);
                     choicesJSON.add(choice1);
-                    choicesJSON.add(choice2);
-                    choicesJSON.add(choice3);
-                    choicesJSON.add(choice4);
+                    if(!enterOption2TextField.getText().equals(""))
+                        choicesJSON.add(choice2);
+                    if(!enterOption3TextField.getText().equals(""))
+                        choicesJSON.add(choice3);
+                    if(!enterOption4TextField.getText().equals(""))
+                        choicesJSON.add(choice4);
                     question.put("choiceArray", choicesJSON);
                     JSONArray questionBankJSON = new JSONArray();
                     questionBankJSON.add(question); //add question to question bank
@@ -364,10 +379,8 @@ public class Main extends Application {
                         d.printStackTrace();
                     }
                 }
+                setupGUI(primaryStage);
             }
-
-
-            setupGUI(primaryStage);
         });
     }
 
@@ -737,7 +750,7 @@ public class Main extends Application {
                 
             }
         } catch(Exception e) {
-            System.out.print(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 }
