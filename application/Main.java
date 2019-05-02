@@ -191,7 +191,9 @@ public class Main extends Application {
         Label topic = new Label("                       Topic:");
         ComboBox<String> topicBox = new ComboBox<>();
         topicBox.setPromptText("Select or Type Topic");
-        topicBox.getItems().addAll(questionBank.getTopics());
+        ArrayList<String> topicList = questionBank.getTopics();
+        Collections.sort(topicList);
+        topicBox.getItems().addAll(topicList);
         topicBox.setEditable(true);
         topicHBox.getChildren().addAll(topic, topicBox);
         topicHBox.setAlignment(Pos.CENTER);
