@@ -27,13 +27,13 @@ public class Question
      * @param imageFilepath the file path of this question's image
      * @param choices the ArrayList of possible choices for this question
      */
-    public Question(String meta_data, String question, String topic, String imageFilepath, ArrayList<Choice> choices) {
+    public Question(String meta_data, String question, String topic, String imageFilepath, ArrayList<Choice> choices, boolean outsideImage) {
         this.meta_data = meta_data;
         this.question = question;
         this.topic = topic;
         if(imageFilepath.equals("none"))
         {
-            this.image = new ImageView("science.jpg");
+            this.image = new ImageView("application/science.jpg");
         }
         else
         {
@@ -43,7 +43,21 @@ public class Question
             }
             catch(FileNotFoundException e)
             {
-                this.image = new ImageView(imageFilepath);
+                try
+                {
+                    this.image = new ImageView(imageFilepath);
+                }
+                catch(Exception e2)
+                {
+                    try
+                    {
+                        this.image = new ImageView("application/" + imageFilepath);
+                    }
+                    catch(Exception e3)
+                    {
+                        this.image = new ImageView("application/science.jpg");
+                    }
+                }
             }
         }
         this.choices = choices;

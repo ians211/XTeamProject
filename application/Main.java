@@ -118,7 +118,7 @@ public class Main extends Application {
     private void addQuestion(Stage primaryStage) {
         // main setup
         int textFieldLength = 390;
-        ImageView image = new ImageView("science.jpg");
+        ImageView image = new ImageView("application/science.jpg");
         VBox mainLayout = new VBox(20);
 
         // new question text
@@ -498,7 +498,7 @@ public class Main extends Application {
         Label label = new Label(
                 "Question #1 out of " + quiz.getNumQuestions() + ": " + questionList.get(0).getQuestion());
         label.setWrapText(true); // question wraps around
-        label.setFont(Font.font("Palatino Linotype", 25));
+        label.setFont(Font.font("Palatino Linotype", 15));
 
         // Answer choices
         ArrayList<Choice> qChoices = questionList.get(0).getChoices();
@@ -510,7 +510,8 @@ public class Main extends Application {
             RadioButton answer = new RadioButton(qChoices.get(j).getChoice()); // change to correct options for
             answer.setToggleGroup(group);
             vbox.getChildren().addAll(answer);
-            answer.setFont(Font.font("Palatino Linotype", 10));
+            answer.setFont(Font.font("Palatino Linotype", 15));
+            answer.setWrapText(true);
         }
 
         // show if answer is correct or incorrect
@@ -758,7 +759,7 @@ public class Main extends Application {
                     Choice newChoice = new Choice(correctChoice, choiceText); // create a new choice
                     choices.add(newChoice); // add choice to choices arrayList
                 }
-                Question newQuestion = new Question(meta, qText, topic, imageFileName, choices); // create new question
+                Question newQuestion = new Question(meta, qText, topic, imageFileName, choices, false); // create new question
                 questionBank.addQuestion(topic, newQuestion);
             }
         } catch (Exception e) {
@@ -790,7 +791,8 @@ public class Main extends Application {
             RadioButton answer = new RadioButton(qChoices.get(j).getChoice());
             answer.setToggleGroup(group);
             vbox.getChildren().addAll(answer);
-            answer.setFont(Font.font("Palatino Linotype", 10));
+            answer.setFont(Font.font("Palatino Linotype", 15));
+            answer.setWrapText(true);
         }
 
         // set image
