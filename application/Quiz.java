@@ -12,6 +12,7 @@ public class Quiz
 
     int numQuestions;
     int questionNum;
+
     int numberAnswered;
     int numberCorrect;
 
@@ -43,7 +44,7 @@ public class Quiz
 
     public int getPercentCorrect()
     {
-        return (int)((((double)(numberCorrect))/((double)(numberAnswered))) * 100);
+        return (int)((((double)(numberCorrect))/((double)(numQuestions))) * 100);
     }
 
     public ArrayList<Question> getQuestionList(int numQuestions) {
@@ -95,5 +96,13 @@ public class Quiz
 
     public void setNumQuestions(int numQuestions) {
         this.numQuestions = numQuestions;
+    }
+
+    public void setNumberAnswered(int numberAnswered) {
+        this.numberAnswered = numberAnswered;
+    }
+
+    public void setNumberCorrect(int numberCorrect) {
+        this.numberCorrect = numberCorrect;
     }
 }

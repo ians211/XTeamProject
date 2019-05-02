@@ -40,4 +40,16 @@ public class Choice
     {
         return choice;
     }
+
+    public String getCorrect()
+    {
+        if(isCorrect)
+        {
+            return "T";
+        }
+        else
+        {
+            return "F";
+        }
+    }
 }

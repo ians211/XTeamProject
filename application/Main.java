@@ -415,6 +415,7 @@ public class Main extends Application {
         
         
         ArrayList<String> topics = questionBank.getTopics();
+        Collections.sort(topics);
         int numChoices = topics.size();
         
         ArrayList<CheckBox> checkMarks = new ArrayList<CheckBox>();
@@ -470,19 +471,33 @@ public class Main extends Application {
         });
 
         next.setOnAction(e ->
-        {                       
-             quizScreen(primaryStage, initializeTopics(topics, checkMarks), getNumberQuestions(numQuestions));
+        {
+            int num = getNumberQuestions(numQuestions);
+            if(num == -1)
+            {
+                numQuestions.setText("");
+                numQuestions.setPromptText("You must input a natural number");
+                numQuestions.setStyle("-fx-prompt-text-fill: #e2091e");
+            }
+            else
+            {
+                quizScreen(primaryStage, initializeTopics(topics, checkMarks), getNumberQuestions(numQuestions));
+            }
         });
     }
     
     private int getNumberQuestions(TextField numQuestions) {
       
-      int num = 10;
+      int num;
       
       try {
         num = Integer.parseInt(numQuestions.getText());
+        if(num <= 0)
+        {
+            num = -1;
+        }
       } catch (Exception e) {
-        num = 10;
+        num = -1;
       }      
       
       return num;
@@ -512,15 +527,17 @@ public class Main extends Application {
 
         ArrayList<Question> questionList = quiz.getQuestionList(numQuestions);
 
-        Label label = new Label("Question #1: " + questionList.get(0).getQuestion());
+        Label label = new Label("Question #1 out of " + quiz.getNumQuestions() + ": " + questionList.get(0).getQuestion());
+
+        label.setWrapText(true);
 
         label.setFont(Font.font("Palatino Linotype", 12));
 
         // Answer choices
-        ArrayList<Choice> qChoices = allQuestions.get(0).getChoices();
+        ArrayList<Choice> qChoices = questionList.get(0).getChoices();
 
         Collections.shuffle(qChoices);
-
+        VBox mainVBox = new VBox(50);
         VBox vbox = new VBox(50);
         ToggleGroup group = new ToggleGroup();
 
@@ -548,7 +565,11 @@ public class Main extends Application {
 
         incorrect.setFont(Font.font("Palatino Linotyp", 20));
 
-        vbox.getChildren().addAll(correct, incorrect);
+        VBox choiceVBox = new VBox(50);
+
+        choiceVBox.getChildren().addAll(correct, incorrect);
+
+        mainVBox.getChildren().addAll(vbox, choiceVBox);
 
         // Picture for question
 
@@ -583,7 +604,9 @@ public class Main extends Application {
                 quiz.setQuestionNum(quiz.getQuestionNum() + 1);
                 if(quiz.getQuestionNum() < quiz.getNumQuestions())
                 {
-                    setQuestion(questionList.get(quiz.getQuestionNum()), label, vbox, group, quiz);
+                    correct.setFont(Font.font("Palatino Linotyp", 20));
+                    incorrect.setFont(Font.font("Palatino Linotyp", 20));
+                    setQuestion(questionList.get(quiz.getQuestionNum()), label, vbox, group, quiz, imageView);
                 }
                 else
                 {
@@ -705,11 +728,16 @@ public class Main extends Application {
                         {
                             if(radioButton.getText().equals(correctAnswer))
                             {
+                                System.out.println("correct");
                                 correct.setFont(Font.font("Verdana Bold", 35));
+                                quiz.setNumberCorrect(quiz.getNumberCorrect() + 1);
+                                quiz.setNumberAnswered(quiz.getNumberAnswered() + 1);
                             }
                             else
                             {
+                                System.out.println("incorrect");
                                 incorrect.setFont(Font.font("Verdana Bold", 35));
+                                quiz.setNumberAnswered(quiz.getNumberAnswered() + 1);
                             }
                         }
                     }
@@ -734,7 +762,9 @@ public class Main extends Application {
 
         HBox hbox = new HBox(10);
 
-        hbox.getChildren().addAll(backButton, pb, enterButton, nextButton, submitButton);
+        hbox.getChildren().addAll(enterButton, nextButton);
+
+        hbox.setAlignment(Pos.CENTER_RIGHT);
 
         primaryStage.setTitle("Quiz Generator");
 
@@ -750,9 +780,9 @@ public class Main extends Application {
 
         root.setBottom(hbox);
 
-        root.setRight(vbox);
+        root.setRight(mainVBox);
 
-        root.setAlignment(vbox, Pos.CENTER_RIGHT);
+        root.setAlignment(mainVBox, Pos.CENTER_RIGHT);
 
         root.setLeft(imageView);
 
@@ -783,24 +813,28 @@ public class Main extends Application {
         VBox leftBox = new VBox();
         leftBox.setPadding(new Insets(10));
         leftBox.setSpacing(8);
-        Label finalScore = new Label("Final Score: " + quiz.getPercentCorrect());
-        Label answered = new Label("You answered " + quiz.getNumberAnswered() + "questions");
+        Label finalScore = new Label("Final Score: " + quiz.getPercentCorrect() + "%");
+        Label answered = new Label("You answered " + quiz.getNumberAnswered() + " questions");
+        Label answeredCorrectly = new Label("You answered " + quiz.getNumberCorrect() + " questions correctly");
         Label totalQuestions = new Label("Total questions: " + quiz.getNumQuestions());
         finalScore.setFont(new Font("Palatino Linotype", 20));
         answered.setFont(new Font("Palatino Linotype", 20));
+        answeredCorrectly.setFont(new Font("Palatino Linotype", 20));
         totalQuestions.setFont(new Font("Palatino Linotype", 20));
-        leftBox.getChildren().addAll(finalScore, answered, totalQuestions);
+        leftBox.getChildren().addAll(finalScore, answeredCorrectly, answered, totalQuestions);
         root.setLeft(leftBox);
 
 
 
 
-        Button exit = new Button("Home");
+        Button home = new Button("Home");
         Button newQuiz = new Button("Generate new quiz");
+        Button exit = new Button("Exit");
+        Button exitS = new Button("Exit and save");
         HBox bottomBox = new HBox();
         Pane spacer = new Pane();
         bottomBox.setHgrow(spacer, Priority.ALWAYS);
-        bottomBox.getChildren().addAll(exit, spacer, newQuiz);
+        bottomBox.getChildren().addAll(home, exit, exitS, newQuiz);
         root.setBottom(bottomBox);
         bottomBox.setPadding(new Insets(10, 10, 10, 10));
         bottomBox.setSpacing(8);
@@ -811,9 +845,53 @@ public class Main extends Application {
             selectQuizTopics(primaryStage);
         });
 
-        exit.setOnAction(e ->
+        home.setOnAction(e ->
         {
             setupGUI(primaryStage);
+        });
+        exit.setOnAction(e ->
+        {
+            ((Stage)primaryStage.getScene().getWindow()).close();
+        });
+        exitS.setOnAction(e ->
+        {
+
+            ArrayList<String> topics=questionBank.getTopics();
+            JSONArray questionBankJSON = new JSONArray();
+            for(int i=0; i<topics.size();i++) {
+                ArrayList<Question> currQuestions = questionBank.getListOfQuestionsFromTopic(topics.get(i));
+                for(int j=0; j<currQuestions.size();j++) {
+                    JSONObject question = new JSONObject();
+                    question.put("meta-data", currQuestions.get(j).getMeta_data());
+                    question.put("questionText", currQuestions.get(j).getQuestion());
+                    question.put("topic", topics.get(i));
+                    question.put("image", currQuestions.get(j).getImage());
+                    //create JSON array of choices
+                    ArrayList<Choice> choices = currQuestions.get(j).getChoices();
+                    JSONArray choicesJSON = new JSONArray();
+                    for(int k=0; k<choices.size();k++) {
+                        JSONObject choice = new JSONObject();
+                        choice.put("isCorrect", choices.get(k).getCorrect());
+                        choice.put("choice", choices.get(k).getChoice());
+                        choicesJSON.add(choice);
+                    }
+                    question.put("choiceArray", choicesJSON);
+                    questionBankJSON.add(question); //add question to question bank
+                }
+            }
+            JSONObject userQuestion = new JSONObject(); //add question bank to file
+            userQuestion.put("questionArray", questionBankJSON);
+            //create a new file with JSON data
+            try (FileWriter file = new FileWriter("questionBank.json")) {
+
+                file.write(userQuestion.toJSONString());
+                file.close();
+
+            } catch (IOException d) {
+                d.printStackTrace();
+            }
+
+            ((Stage)primaryStage.getScene().getWindow()).close();
         });
     }
 
@@ -887,9 +965,9 @@ public class Main extends Application {
         }
     }
 
-    public void setQuestion(Question question, Label label, VBox vbox, ToggleGroup group, Quiz quiz)
+    public void setQuestion(Question question, Label label, VBox vbox, ToggleGroup group, Quiz quiz, ImageView imageView)
     {
-        label.setText("Question #" + (quiz.getQuestionNum() + 1) + ": " + question.getQuestion());
+        label.setText("Question #" + (quiz.getQuestionNum() + 1) + " out of " + quiz.getNumQuestions() + ": " + question.getQuestion());
         ArrayList<Choice> qChoices = question.getChoices();
         vbox.getChildren().clear();
         for (int j = 0; j < qChoices.size(); j++) {
@@ -907,15 +985,12 @@ public class Main extends Application {
             answer.setFont(Font.font("Palatino Linotype", 10));
 
         }
-        Label correct = new Label("Correct"); // change to actual question,
 
-        correct.setFont(Font.font("Palatino Linotyp", 20));
+        imageView.setImage(question.getImage().getImage()); // change to picture specific to image
 
-        Label incorrect = new Label("Incorrect"); // change to actual question,
+        imageView.setFitHeight(300);
 
-        incorrect.setFont(Font.font("Palatino Linotyp", 20));
-
-        vbox.getChildren().addAll(correct, incorrect);
+        imageView.setFitWidth(400);
     }
 }
 
