@@ -10,9 +10,10 @@ Team Members:
 4. member Nick Hayden, lecture 1, and nhayden@wisc.edu
 
 Notes or comments to the grader:
-
-
 [place any comments or notes that will help the grader here]
-Be nice
 
+Ateam 50
 
+when exiting the program and saving the questions from the last quiz to a json file, the file is saved in the directory that the executable.jar is found
+
+json-simple-1.1.1.jar must be in the same directory as the executable.jar for the program to work
